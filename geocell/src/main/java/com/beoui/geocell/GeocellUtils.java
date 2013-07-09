@@ -22,7 +22,9 @@ import java.util.List;
 
 import javax.jdo.annotations.PrimaryKey;
 import javax.persistence.Id;
+import com.google.appengine.api.datastore.GeoPt;
 
+import com.beoui.geocell.annotations.GeoPoint;
 import com.beoui.geocell.annotations.Geocells;
 import com.beoui.geocell.annotations.Latitude;
 import com.beoui.geocell.annotations.Longitude;
@@ -577,21 +579,14 @@ public final class GeocellUtils {
     	}
     	
     	Point location = new Point();
-    	
+    	GeoPt geoPt = null;
     	try {
-	        location.setLat(getField(entity.getClass(), Latitude.class).getDouble(entity));
-	    	location.setLon(getField(entity.getClass(), Longitude.class).getDouble(entity));
+    	    geoPt = (GeoPt) getField(entity.getClass(), GeoPoint.class).get(entity);
+	        location.setLat(geoPt.getLatitude());
+	    	location.setLon(geoPt.getLongitude());
         } catch (IllegalArgumentException e1) {
-			try {
-				location.setLat((Double) getField(entity.getClass(), Latitude.class).get(entity));
-				location.setLon((Double) getField(entity.getClass(), Longitude.class).get(entity));
-			} catch (IllegalArgumentException e2) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IllegalAccessException e2) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+         // TODO Auto-generated catch block
+            e1.printStackTrace();
 		} catch (IllegalAccessException e1) {
 	        // TODO Auto-generated catch block
 	        e1.printStackTrace();
